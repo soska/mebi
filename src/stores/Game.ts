@@ -59,6 +59,10 @@ export class Game {
     return true;
   }
 
+  get gameOver(): boolean {
+    return this.status === "won" || this.status === "lost";
+  }
+
   isLetterRevealed(letter: string): boolean {
     const normalized = letter
       .toUpperCase()
@@ -73,6 +77,14 @@ export class Game {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
     return this.uniqueLetters.has(normalized);
+  }
+
+  isLetterWrong(letter: string): boolean {
+    const normalized = letter
+      .toUpperCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    return !this.guessedLetters.has(normalized);
   }
 
   guessLetter(letter: string): boolean {
@@ -99,6 +111,11 @@ export class Game {
     for (const letter of this.uniqueLetters) {
       this.guessedLetters.add(letter);
     }
+  }
+
+  unreveal(): void {
+    this.status = "playing";
+    this.guessedLetters.clear();
   }
 
   markWon(): void {

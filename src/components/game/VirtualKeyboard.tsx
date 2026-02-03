@@ -17,10 +17,14 @@ export const VirtualKeyboard = observer(function VirtualKeyboard({
   game,
   onGuess,
 }: VirtualKeyboardProps) {
-  const getKeyState = (letter: string) => {
-    if (!game.canGuess) return "disabled";
-    if (!game.guessedLetters.has(letter)) return "available";
-    if (game.isLetterCorrect(letter)) return "correct";
+  const getKeyState = (letter: string): "available" | "correct" | "wrong" => {
+    if (!game.guessedLetters.has(letter)) {
+      return "available";
+    }
+    const isCorrect = game.isLetterCorrect(letter);
+    if (isCorrect) {
+      return "correct";
+    }
     return "wrong";
   };
 
@@ -33,6 +37,7 @@ export const VirtualKeyboard = observer(function VirtualKeyboard({
               key={letter}
               letter={letter}
               state={getKeyState(letter)}
+              disabled={!game.canGuess}
               onClick={() => onGuess(letter)}
             />
           ))}

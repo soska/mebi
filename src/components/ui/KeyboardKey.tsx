@@ -7,15 +7,18 @@ const keyVariants = cva(
     variants: {
       state: {
         available:
-          "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer active:scale-95",
+          "bg-pink-200 hover:bg-yellow-400 text-purple-800 hover:text-purple-900 hover:shadow-md cursor-pointer active:scale-95 hover:scale-110 duration-100 ease-out",
         correct: "bg-green-500 text-white cursor-default",
         wrong: "bg-red-400 text-white cursor-default opacity-60",
-        disabled:
-          "bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed",
+      },
+      disabled: {
+        true: "opacity-50 cursor-not-allowed pointer-events-none",
+        false: "",
       },
     },
     defaultVariants: {
       state: "available",
+      disabled: false,
     },
   }
 );
@@ -29,14 +32,16 @@ interface KeyboardKeyProps extends VariantProps<typeof keyVariants> {
 export function KeyboardKey({
   letter,
   state,
+  disabled,
   onClick,
   className,
 }: KeyboardKeyProps) {
+  const isDisabled = disabled ?? false;
   return (
     <button
-      className={cn(keyVariants({ state }), className)}
+      className={cn(keyVariants({ state, disabled: isDisabled }), className)}
       onClick={onClick}
-      disabled={state !== "available"}
+      disabled={isDisabled}
     >
       {letter}
     </button>
