@@ -1,7 +1,24 @@
 @import "tailwindcss";
 
+@theme {
+  /* Override Tailwind's default font sizes with larger values (1.25x multiplier) */
+  --text-xs: 0.9375rem;    /* 15px (was 12px) */
+  --text-sm: 1.09375rem;   /* 17.5px (was 14px) */
+  --text-base: 1.25rem;    /* 20px (was 16px) */
+  --text-lg: 1.40625rem;   /* 22.5px (was 18px) */
+  --text-xl: 1.5625rem;    /* 25px (was 20px) */
+  --text-2xl: 1.875rem;    /* 30px (was 24px) */
+  --text-3xl: 2.34375rem;  /* 37.5px (was 30px) */
+  --text-4xl: 2.8125rem;   /* 45px (was 36px) */
+  --text-5xl: 3.75rem;     /* 60px (was 48px) */
+  --text-6xl: 4.6875rem;   /* 75px (was 60px) */
+  --text-7xl: 5.625rem;    /* 90px (was 72px) */
+  --text-8xl: 7.5rem;      /* 120px (was 96px) */
+  --text-9xl: 10rem;       /* 160px (was 128px) */
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Sen", "Raleway", "Grandstander", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -47,4 +64,17 @@ body {
 
 .animate-flip {
   animation: flip 0.4s ease-in-out;
+}
+
+/* Font utility classes */
+.font-sen {
+  font-family: "Sen", sans-serif;
+}
+
+.font-raleway {
+  font-family: "Raleway", sans-serif;
+}
+
+.font-grandstander {
+  font-family: "Grandstander", sans-serif;
 }

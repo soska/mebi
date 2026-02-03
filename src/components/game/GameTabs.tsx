@@ -16,7 +16,7 @@ export const GameTabs = observer(function GameTabs() {
   };
 
   return (
-    <div className="flex justify-center gap-2 flex-wrap">
+    <div className="flex flex-col justify-center gap-2 flex-wrap">
       {gameStore.gamesList.map((_, index) => (
         <TabItem
           key={index}

@@ -2,16 +2,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const slotVariants = cva(
-  "w-10 h-12 sm:w-12 sm:h-14 flex items-center justify-center text-xl sm:text-2xl font-bold rounded border-2 transition-all duration-300",
+  "w-20 h-24 text-4xl flex items-center justify-center font-grandstander  font-bold rounded border-2 transition-all duration-300",
   {
     variants: {
       state: {
         hidden:
-          "bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600",
+          "bg-black/70 dark:bg-gray-700 border-white/10 dark:border-gray-600",
         revealed:
           "bg-white dark:bg-gray-800 border-blue-500",
         correct:
-          "bg-green-100 dark:bg-green-900 border-green-500 text-green-700 dark:text-green-300",
+          "bg-green-600 dark:bg-green-900 border-green-500 text-green-100 dark:text-green-300",
         wrong:
           "bg-red-100 dark:bg-red-900 border-red-500 text-red-700 dark:text-red-300",
       },
