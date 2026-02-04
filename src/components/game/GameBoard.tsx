@@ -36,7 +36,7 @@ export const GameBoard = observer(function GameBoard({ game }: GameBoardProps) {
                     key={letterIndex}
                     letter={letter}
 
-                    isRevealed={game.isLetterRevealed(letter) || game.status === "revealed"}
+                    isRevealed={game.isLetterRevealed(letter) || game.status === "revealed" || game.gameOver}
                     state={getLetterState()}
                   />
                 );
@@ -45,7 +45,7 @@ export const GameBoard = observer(function GameBoard({ game }: GameBoardProps) {
                   <BoardSymbolSlot
                     key={letterIndex}
                     letter={letter}
-                    isRevealed={game.status === "revealed"}
+                    isRevealed={game.status == "revealed" || game.gameOver}
                   />
                 );
               }
