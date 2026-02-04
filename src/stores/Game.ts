@@ -8,6 +8,7 @@ export interface SerializedGame {
   texto: string;
   guessedLetters: string[];
   status: GameStatus;
+  boardScale?: number;
 }
 
 export class Game {
@@ -15,6 +16,7 @@ export class Game {
   texto: string;
   guessedLetters: Set<string> = new Set();
   status: GameStatus = "pending";
+  boardScale: number = 1;
 
   static MAX_GUESSES = 4;
 
@@ -126,6 +128,10 @@ export class Game {
     this.status = "lost";
   }
 
+  setBoardScale(scale: number): void {
+    this.boardScale = Math.round(Math.max(0.5, Math.min(1.5, scale)) * 10) / 10;
+  }
+
   reset(): void {
     this.guessedLetters.clear();
     this.status = "pending";
@@ -137,6 +143,7 @@ export class Game {
       texto: this.texto,
       guessedLetters: Array.from(this.guessedLetters),
       status: this.status,
+      boardScale: this.boardScale,
     };
   }
 
@@ -144,6 +151,7 @@ export class Game {
     const game = new Game(data.texto, data.id);
     game.guessedLetters = new Set(data.guessedLetters);
     game.status = data.status;
+    game.boardScale = data.boardScale ?? 1;
     return game;
   }
 }

@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Game } from "../../stores/Game";
 import { BoardLetterSlot } from "../ui/BoardLetterSlot";
+import { BoardSymbolSlot } from "../ui/BoardSymbolSlot";
 
 interface GameBoardProps {
   game: Game;
@@ -14,34 +15,44 @@ export const GameBoard = observer(function GameBoard({ game }: GameBoardProps) {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-6">
-      {game.words.map((word, wordIndex) => (
-        <div key={wordIndex} className="flex gap-2">
-          {word.split("").map((letter, letterIndex) => {
-            const isLetter = /[A-ZÁÉÍÓÚÜÑ]/i.test(letter);
+    <div
+      className="game-board flex flex-wrap justify-center gap-[var(--board-gap-word)]"
+      style={{ '--board-scale': game.boardScale } as React.CSSProperties}
+    >
+      {game.words.map((word, wordIndex) => {
+        // Filter to only letters for rendering
+        const letters = word.split("")
+        // const letters = word.split("").filter((letter) =>
+        //   /[A-ZÁÉÍÓÚÜÑ0-9:]/i.test(letter)
+        // );
 
-            if (!isLetter) {
-              return (
-                <div
-                  key={letterIndex}
-                  className="w-6 flex items-center justify-center text-xl"
-                >
-                  {letter}
-                </div>
-              );
-            }
+        return (
+          <div key={wordIndex} className="flex gap-[var(--board-gap-letter)]">
+            {letters.map((letter, letterIndex) => {
+              const isLetter = /[A-ZÁÉÍÓÚÜÑ0-9:]/i.test(letter);
+              if (isLetter) {
+                return (
+                  <BoardLetterSlot
+                    key={letterIndex}
+                    letter={letter}
 
-            return (
-              <BoardLetterSlot
-                key={letterIndex}
-                letter={letter}
-                isRevealed={game.isLetterRevealed(letter)}
-                state={getLetterState()}
-              />
-            );
-          })}
-        </div>
-      ))}
+                    isRevealed={game.isLetterRevealed(letter) || game.status === "revealed"}
+                    state={getLetterState()}
+                  />
+                );
+              } else {
+                return (
+                  <BoardSymbolSlot
+                    key={letterIndex}
+                    letter={letter}
+                    isRevealed={game.status === "revealed"}
+                  />
+                );
+              }
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 });

@@ -49,6 +49,16 @@ body {
   }
 }
 
+/* Board scaling */
+.game-board {
+  --board-scale: 1;
+  --board-slot-w: calc(5rem * var(--board-scale));
+  --board-slot-h: calc(6rem * var(--board-scale));
+  --board-font: calc(2.8125rem * var(--board-scale));
+  --board-gap-word: calc(1.5rem * var(--board-scale));
+  --board-gap-letter: calc(0.5rem * var(--board-scale));
+}
+
 /* Card flip animation */
 @keyframes flip {
   0% {

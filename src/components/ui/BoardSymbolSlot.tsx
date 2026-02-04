@@ -7,13 +7,9 @@ const slotVariants = cva(
     variants: {
       state: {
         hidden:
-          "bg-black/50 dark:bg-gray-700 border-white/10 dark:border-gray-600",
+          "bg-black/30 border-white/10 text-white/25",
         revealed:
           "bg-white dark:bg-gray-800 border-blue-500",
-        correct:
-          "bg-green-600 dark:bg-green-900 border-green-500 text-green-100 dark:text-green-300",
-        wrong:
-          "bg-red-100 dark:bg-red-900 border-red-500 text-red-700 dark:text-red-300",
       },
     },
     defaultVariants: {
@@ -28,26 +24,23 @@ interface BoardLetterSlotProps extends VariantProps<typeof slotVariants> {
   className?: string;
 }
 
-export function BoardLetterSlot({
+export function BoardSymbolSlot({
   letter,
   isRevealed,
-  state,
   className,
 }: BoardLetterSlotProps) {
-  const displayState = isRevealed ? (state ?? "revealed") : "hidden";
+  const displayState = isRevealed ? "revealed" : "hidden";
 
   return (
     <div
       className={cn(
         slotVariants({ state: displayState }),
-        isRevealed && "animate-flip",
         className
       )}
     >
       <span
         className={cn(
-          "transition-opacity duration-150",
-          isRevealed ? "opacity-100" : "opacity-0"
+          "duration-150",
         )}
       >
         {letter}

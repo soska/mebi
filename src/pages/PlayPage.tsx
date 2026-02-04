@@ -76,8 +76,27 @@ export const PlayPage = observer(function PlayPage() {
                 exit={{ opacity: 0.8, scale: 1.3, filter: "blur(10px)" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <div className="p-4 flex items-center justify-center">
+                <div className="p-4 flex items-center justify-center relative">
                   <GameBoard game={game} />
+                  <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/30 rounded-lg p-1">
+                    <button
+                      onClick={() => game.setBoardScale(game.boardScale - 0.1)}
+                      disabled={game.boardScale <= 0.5}
+                      className="w-8 h-8 flex items-center justify-center rounded text-white/70 hover:bg-white/10 disabled:opacity-30 font-bold text-lg"
+                    >
+                      -
+                    </button>
+                    <span className="text-white/60 text-sm w-10 text-center font-mono">
+                      {Math.round(game.boardScale * 100)}%
+                    </span>
+                    <button
+                      onClick={() => game.setBoardScale(game.boardScale + 0.1)}
+                      disabled={game.boardScale >= 1.5}
+                      className="w-8 h-8 flex items-center justify-center rounded text-white/70 hover:bg-white/10 disabled:opacity-30 font-bold text-lg"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center justify-center">
                   <GameControls game={game} />

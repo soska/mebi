@@ -7,7 +7,7 @@ const keyVariants = cva(
     variants: {
       state: {
         available:
-          "bg-pink-200 hover:bg-yellow-400 text-purple-800 hover:text-purple-900 hover:shadow-md cursor-pointer active:scale-95 hover:scale-110 duration-100 ease-out",
+          "bg-pink-200 hover:bg-yellow-400 text-purple-800 hover:text-purple-900 hover:shadow-md cursor-pointer active:scale-95 hover:scale-150 duration-100 ease-out",
         correct: "bg-green-500 text-white cursor-default",
         wrong: "bg-red-400 text-white cursor-default opacity-60",
       },
