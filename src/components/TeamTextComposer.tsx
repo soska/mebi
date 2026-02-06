@@ -1,5 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { cn } from "../lib/utils";
+import { motion } from "motion/react";
+
 
 interface TeamTextComposerProps {
   placeholder: string;
@@ -26,7 +28,12 @@ export const TeamTextComposer = observer(function TeamTextComposer({
           ? "medium"
           : "good";
   return (
-    <div className="px-4">
+    <motion.div className="px-4"
+      initial={{ opacity: 0, y: 10, scaleY: 0.95 }}
+      animate={{ opacity: 1, y: 0, scaleY: 1 }}
+      exit={{ opacity: 0, y: 10, scaleY: 0.95 }}
+      transition={{ duration: 0.15, ease: "easeInOut" }}
+    >
       <div className="bg-gray-100 flex flex-col rounded-md">
         <textarea
           value={text}
@@ -47,6 +54,6 @@ export const TeamTextComposer = observer(function TeamTextComposer({
           <div>{charactersCount} letras</div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 });

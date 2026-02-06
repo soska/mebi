@@ -7,6 +7,7 @@ import { TeamTextComposer } from "../components/TeamTextComposer";
 import { ArrowRightIcon, MessageCircleWarningIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { observable, action, makeObservable, computed } from "mobx";
+import { AnimatePresence } from "motion/react";
 
 
 class CreatePageStore {
@@ -76,7 +77,7 @@ class CreatePageStore {
 
 const CounterButton = ({ onClick, children, className }: { onClick: () => void, children: React.ReactNode, className?: string }) => {
   return (
-    <button onClick={onClick} className={cn("bg-black/50 text-white/80 p-2 w-12 flex items-center justify-center", className)}>{children}</button>
+    <button onClick={onClick} className={cn("bg-black/50 text-white/80 p-2 w-12 flex items-center justify-center hover:scale-110 duration-100 ease-in-out active:scale-95", className)}>{children}</button>
   );
 };
 
@@ -107,7 +108,6 @@ const FairnessNotice = observer(({ score, canSubmit }: { score: number, canSubmi
           Checa que la longitud de los textos sea similar
         </span>
       </div>
-
     )
   }
 
@@ -141,7 +141,7 @@ export const CreatePage = observer(function CreatePage() {
           <div className="text-white/80 text-lg font-grandstander">
             # de equipos
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row pr-4">
             <CounterButton onClick={() => store.decreaseTeamsCount()} className="rounded-tl-md rounded-bl-md">
               <MinusIcon className="w-8 h-8 stroke-5" />
             </CounterButton>
@@ -154,14 +154,16 @@ export const CreatePage = observer(function CreatePage() {
       </div>
 
       <div className="flex flex-col gap-4 pt-4">
-        {Array.from({ length: store.teamsCount }, (_, index) => (
-          <TeamTextComposer
-            key={index}
-            text={store.texts[index]}
-            setText={(text) => store.setText(text, index)}
-            placeholder={`Texto del equipo ${index + 1}`}
-          />
-        ))}
+        <AnimatePresence initial={false}>
+          {Array.from({ length: store.teamsCount }, (_, index) => (
+            <TeamTextComposer
+              key={index}
+              text={store.texts[index]}
+              setText={(text) => store.setText(text, index)}
+              placeholder={`Texto del equipo ${index + 1}`}
+            />
+          ))}
+        </AnimatePresence>
       </div>
 
       <div className="sticky bottom-0 left-0 right-0 mt-4 bg-blue-900 border-t-2 border-white/20   justify-between items-center flex p-4">
