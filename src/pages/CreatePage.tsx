@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { observer } from "mobx-react-lite";
 import { useGameStore } from "../stores/RootStore";
 import { Button } from "../components/ui/Button";
+import { TeamTextComposer } from "../components/TeamTextComposer";
 import { ArrowRightIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { observable, action, makeObservable, computed } from "mobx";
@@ -63,6 +64,7 @@ const CounterButton = ({ onClick, children, className }: { onClick: () => void, 
 
 export const CreatePage = observer(function CreatePage() {
   const store = useMemo(() => new CreatePageStore(), []);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).store = store;
   const [, setLocation] = useLocation();
   const gameStore = useGameStore();
@@ -104,14 +106,12 @@ export const CreatePage = observer(function CreatePage() {
 
       <div className="flex flex-col gap-4 pt-4">
         {Array.from({ length: store.teamsCount }, (_, index) => (
-          <div key={index} className="px-4">
-            <textarea
-              value={store.texts[index]}
-              onChange={(e) => store.setText(e.target.value, index)}
-              placeholder={`Texto del equipo ${index + 1}`}
-              className="w-full h-52 max-h-[80vh] p-3 border rounded-lg resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 font-grandstander text-lg"
-            />
-          </div>
+          <TeamTextComposer
+            key={index}
+            text={store.texts[index]}
+            setText={(text) => store.setText(text, index)}
+            placeholder={`Texto del equipo ${index + 1}`}
+          />
         ))}
       </div>
       {/* <textarea
