@@ -4,18 +4,18 @@ import { observer } from "mobx-react-lite";
 import { useGameStore } from "../stores/RootStore";
 import { Button } from "../components/ui/Button";
 import { TeamTextComposer } from "../components/TeamTextComposer";
-import { ArrowRightIcon, MinusIcon, PlusIcon } from "lucide-react";
+import { ArrowRightIcon, MessageCircleWarningIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { cn } from "../lib/utils";
 import { observable, action, makeObservable, computed } from "mobx";
+
 
 class CreatePageStore {
   teamsCount: number = 3;
   texts: string[] = [];
 
-  setText: (text: string, index: number) => void = (text: string, index: number) => {
-    console.log("setText", text, index);
+  setText(text: string, index: number): void {
     this.texts[index] = text;
-  };
+  }
 
   constructor() {
     this.texts = Array.from({ length: this.teamsCount }, () => "");
@@ -27,9 +27,8 @@ class CreatePageStore {
       setText: action,
       textsForTeams: computed,
       canSubmit: computed,
+      fairnessScore: computed,
     });
-
-
   }
 
   public increaseTeamsCount() {
@@ -53,6 +52,26 @@ class CreatePageStore {
   get canSubmit(): boolean {
     return this.textsForTeams.every((text) => text.trim());
   }
+
+  get fairnessScore(): number {
+    const lengths = this.textsForTeams.map((text) => text.length).sort((a, b) => a - b);
+    const max = lengths[lengths.length - 1];
+    const min = lengths[0];
+    const delta = max - min;
+
+
+    if (delta === 0) return 1;
+    if (delta === max) return 0;
+
+    // try to avoid division by zero
+    if (max === 0) return 1;
+
+    // avoid overreacting to small differences
+    if (delta < 10) return 1;
+
+
+    return 1 - (delta / max);
+  }
 }
 
 const CounterButton = ({ onClick, children, className }: { onClick: () => void, children: React.ReactNode, className?: string }) => {
@@ -61,19 +80,51 @@ const CounterButton = ({ onClick, children, className }: { onClick: () => void, 
   );
 };
 
+const FairnessNotice = observer(({ score, canSubmit }: { score: number, canSubmit: boolean }) => {
+  if (isNaN(score)) return null;
+
+  if (!canSubmit) {
+    return null;
+  }
+
+  if (score < 0.49) {
+    return (
+      <div className="text-red-500 text-lg font-grandstander flex items-center justify-center gap-2">
+        <MessageCircleWarningIcon />
+        <span>
+          Puede que La diferencia de longitud sea muy grande
+        </span>
+      </div>
+
+    )
+  }
+
+  if (score < 0.65) {
+    return (
+      <div className="text-yellow-500 text-lg font-grandstander flex items-center justify-center gap-2">
+        <MessageCircleWarningIcon />
+        <span>
+          Checa que la longitud de los textos sea similar
+        </span>
+      </div>
+
+    )
+  }
+
+  return (
+    null
+  );
+});
 
 export const CreatePage = observer(function CreatePage() {
   const store = useMemo(() => new CreatePageStore(), []);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).store = store;
   const [, setLocation] = useLocation();
   const gameStore = useGameStore();
 
   const buttonDisabled = !store.canSubmit;
 
-
   const handleCreate = () => {
-    const texts = store.textsForTeams
+    const texts = store.textsForTeams;
     if (texts.length === 0) return;
 
     const firstGameId = gameStore.createGames(texts);
@@ -81,8 +132,6 @@ export const CreatePage = observer(function CreatePage() {
       setLocation(`/play/${firstGameId}`);
     }
   };
-
-  { console.log(store.canSubmit) }
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-900">
@@ -96,7 +145,7 @@ export const CreatePage = observer(function CreatePage() {
             <CounterButton onClick={() => store.decreaseTeamsCount()} className="rounded-tl-md rounded-bl-md">
               <MinusIcon className="w-8 h-8 stroke-5" />
             </CounterButton>
-            <input value={store.teamsCount} className="bg-purple-100 text-purple-900 text-2xl font-bold p-2 w-12 text-center font-grandstander" />
+            <input value={store.teamsCount} readOnly className="bg-purple-100 text-purple-900 text-2xl font-bold p-2 w-12 text-center font-grandstander" />
             <CounterButton onClick={() => store.increaseTeamsCount()} className="rounded-tr-md rounded-br-md">
               <PlusIcon className="w-8 h-8 stroke-5" />
             </CounterButton>
@@ -114,14 +163,11 @@ export const CreatePage = observer(function CreatePage() {
           />
         ))}
       </div>
-      {/* <textarea
-        value={store.texto}
-        onChange={(e) => store.setTexto(e.target.value)}
-        placeholder="Escribe cada versículo en una línea..."
-        className="w-full max-w-2xl h-96 max-h-[80vh] p-3 border rounded-lg resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 font-grandstander text-2xl"
-      /> */}
 
-      <div className="sticky bottom-0 left-0 right-0 bg-blue-950 justify-end flex p-4">
+      <div className="sticky bottom-0 left-0 right-0 mt-4 bg-blue-900 border-t-2 border-white/20   justify-between items-center flex p-4">
+        <div>
+          <FairnessNotice score={store.fairnessScore} canSubmit={store.canSubmit} />
+        </div>
         <Button onClick={handleCreate} size="lg" className={cn("flex items-center justify-center gap-2", buttonDisabled ? "cursor-not-allowed" : "")} disabled={buttonDisabled}>
           Crear partida
           <ArrowRightIcon className="w-10 h-10" />
