@@ -24,6 +24,9 @@ export const PlayPage = observer(function PlayPage() {
 
   const game = gameStore.activeGame;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).game = game;
+
   if (!game) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -77,11 +80,9 @@ export const PlayPage = observer(function PlayPage() {
                 exit={{ opacity: 0.8, scale: 1.3, filter: "blur(10px)" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
+                <GameTimer game={game} />
                 <div className="p-4 flex items-center justify-center relative">
                   <GameBoard game={game} />
-                  <div className="absolute top-2 left-2">
-                    <GameTimer game={game} />
-                  </div>
                   <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/30 rounded-lg p-1">
                     <button
                       onClick={() => game.setBoardScale(game.boardScale - 0.1)}

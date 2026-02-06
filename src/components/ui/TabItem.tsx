@@ -23,13 +23,19 @@ interface TabItemProps extends VariantProps<typeof tabVariants> {
   index: number;
   onClick: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export function TabItem({ index, state, onClick, className }: TabItemProps) {
+export function TabItem({ index, state, onClick, className, disabled }: TabItemProps) {
   return (
     <button
-      className={cn(tabVariants({ state }), className)}
+      className={cn(
+        tabVariants({ state }),
+        disabled && "opacity-40 cursor-not-allowed",
+        className
+      )}
       onClick={onClick}
+      disabled={disabled}
     >
       {index + 1}
     </button>

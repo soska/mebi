@@ -4,13 +4,13 @@ import { cn } from "../../lib/utils";
 
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-lg font-bold font-grandstander transition-al duration-160l focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 text-shadow-md active:scale-97 active:shadow-lg active:text-shadow-sm active:translate-y-0.5 active:duration-100 ",
+  "inline-flex items-center justify-center rounded-lg font-bold font-grandstander transition-all duration-160 focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 text-shadow-md active:scale-97 hover:scale-110 active:shadow-lg active:text-shadow-sm active:translate-y-0.5 active:duration-100 ",
   {
     variants: {
       variant: {
-        primary: "bg-green-600 text-white hover:bg-blue-700 shadow-lg",
-        success: "bg-green-600 text-white hover:bg-green-700",
-        danger: "bg-red-600 text-white hover:bg-red-700",
+        primary: "bg-green-600 text-white hover:bg-blue-500 shadow-lg",
+        success: "bg-green-600 text-white hover:bg-green-500",
+        danger: "bg-red-600 text-white hover:bg-red-500",
         ghost: "bg-black/10 hover:bg-black/20 text-white/70 hover:text-white/80",
       },
       size: {

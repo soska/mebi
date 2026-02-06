@@ -36,6 +36,11 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  cursor: url('/cursor.svg') 16 4, auto;
+}
+
+* {
+  cursor: inherit;
 }
 
 #root {

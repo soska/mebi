@@ -49,7 +49,7 @@ export const GameControls = observer(function GameControls({
       <AnimatePresence mode="wait">
         <motion.div className={cn("flex w-full justify-center items-center p-4", {
           "bg-green-500": game.status === "won",
-          "bg-red-500": game.status === "lost",
+          "bg-red-600": game.status === "lost",
         })}
           initial={{ opacity: 0, y: '25%' }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,7 +58,7 @@ export const GameControls = observer(function GameControls({
         >
           <span className={cn("text-3xl font-bold", {
             "text-white": game.status === "won",
-            "text-yellow-500": game.status === "lost",
+            "text-yellow-300": game.status === "lost",
           })}>
             {game.status === "won" ? "¡La respuesta es correcta!" : "¡La respuesta es incorrecta!"}
           </span>

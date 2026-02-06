@@ -15,6 +15,13 @@ export const GameTabs = observer(function GameTabs() {
     return "inactive";
   };
 
+  const isCurrentGamePlaying = gameStore.activeGame?.status === "playing";
+
+  const handleTabClick = (index: number) => {
+    if (isCurrentGamePlaying) return;
+    gameStore.setActiveGameByIndex(index);
+  };
+
   return (
     <div className="flex flex-col justify-center gap-2 flex-wrap">
       {gameStore.gamesList.map((_, index) => (
@@ -22,7 +29,8 @@ export const GameTabs = observer(function GameTabs() {
           key={index}
           index={index}
           state={getTabState(index)}
-          onClick={() => gameStore.setActiveGameByIndex(index)}
+          onClick={() => handleTabClick(index)}
+          disabled={isCurrentGamePlaying && getTabState(index) !== "active"}
         />
       ))}
     </div>
