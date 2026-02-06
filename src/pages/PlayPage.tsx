@@ -7,6 +7,7 @@ import { GameBoard } from "../components/game/GameBoard";
 import { VirtualKeyboard } from "../components/game/VirtualKeyboard";
 import { GameTabs } from "../components/game/GameTabs";
 import { GameControls } from "../components/game/GameControls";
+import { GameTimer } from "../components/game/GameTimer";
 import { Button } from "../components/ui/Button";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -78,6 +79,9 @@ export const PlayPage = observer(function PlayPage() {
               >
                 <div className="p-4 flex items-center justify-center relative">
                   <GameBoard game={game} />
+                  <div className="absolute top-2 left-2">
+                    <GameTimer game={game} />
+                  </div>
                   <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/30 rounded-lg p-1">
                     <button
                       onClick={() => game.setBoardScale(game.boardScale - 0.1)}

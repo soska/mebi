@@ -9,6 +9,8 @@ export interface SerializedGame {
   guessedLetters: string[];
   status: GameStatus;
   boardScale?: number;
+  remainingTime?: number;
+  timerStartedAt?: number;
 }
 
 export class Game {
@@ -17,8 +19,12 @@ export class Game {
   guessedLetters: Set<string> = new Set();
   status: GameStatus = "pending";
   boardScale: number = 1;
+  remainingTime: number = 60;
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private timerStartedAt: number | null = null;
 
   static MAX_GUESSES = 4;
+  static TIMER_DURATION = 60;
 
   constructor(texto: string, id?: string) {
     this.id = id ?? nanoid(8);
@@ -47,10 +53,67 @@ export class Game {
     return this.status === "playing" && this.guessCount < Game.MAX_GUESSES;
   }
 
+  get formattedTime(): string {
+    const minutes = Math.floor(this.remainingTime / 60);
+    const seconds = this.remainingTime % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  get isTimerLow(): boolean {
+    return this.remainingTime <= 10;
+  }
+
   start(): void {
     if (this.status === "pending") {
       this.status = "playing";
+      this.startTimer();
     }
+  }
+
+  startTimer(): void {
+    this.stopTimer();
+    this.timerStartedAt = Date.now();
+    this.timerInterval = setInterval(() => this.tick(), 1000);
+    this.setupVisibilityHandler();
+  }
+
+  private tick(): void {
+    if (this.remainingTime > 0) {
+      this.remainingTime--;
+      if (this.remainingTime === 0) {
+        this.handleTimeOut();
+      }
+    }
+  }
+
+  private handleTimeOut(): void {
+    this.stopTimer();
+    this.reveal();
+    this.markLost();
+  }
+
+  private stopTimer(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+    this.timerStartedAt = null;
+  }
+
+  private setupVisibilityHandler(): void {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && this.timerStartedAt && this.status === "playing") {
+        const elapsed = Math.floor((Date.now() - this.timerStartedAt) / 1000);
+        const expectedRemaining = Game.TIMER_DURATION - elapsed;
+        if (expectedRemaining <= 0) {
+          this.remainingTime = 0;
+          this.handleTimeOut();
+        } else {
+          this.remainingTime = Math.max(0, expectedRemaining);
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
   }
 
   get isComplete(): boolean {
@@ -109,6 +172,7 @@ export class Game {
   }
 
   reveal(): void {
+    this.stopTimer();
     this.status = "revealed";
     for (const letter of this.uniqueLetters) {
       this.guessedLetters.add(letter);
@@ -121,10 +185,12 @@ export class Game {
   }
 
   markWon(): void {
+    this.stopTimer();
     this.status = "won";
   }
 
   markLost(): void {
+    this.stopTimer();
     this.status = "lost";
   }
 
@@ -133,8 +199,10 @@ export class Game {
   }
 
   reset(): void {
+    this.stopTimer();
     this.guessedLetters.clear();
     this.status = "pending";
+    this.remainingTime = Game.TIMER_DURATION;
   }
 
   serialize(): SerializedGame {
@@ -144,6 +212,8 @@ export class Game {
       guessedLetters: Array.from(this.guessedLetters),
       status: this.status,
       boardScale: this.boardScale,
+      remainingTime: this.remainingTime,
+      timerStartedAt: this.timerStartedAt ?? undefined,
     };
   }
 
@@ -152,6 +222,22 @@ export class Game {
     game.guessedLetters = new Set(data.guessedLetters);
     game.status = data.status;
     game.boardScale = data.boardScale ?? 1;
+    game.remainingTime = data.remainingTime ?? Game.TIMER_DURATION;
+
+    // Resume timer if game was playing
+    if (data.status === "playing" && data.timerStartedAt) {
+      const elapsed = Math.floor((Date.now() - data.timerStartedAt) / 1000);
+      const expectedRemaining = (data.remainingTime ?? Game.TIMER_DURATION) - elapsed;
+      if (expectedRemaining <= 0) {
+        game.remainingTime = 0;
+        game.reveal();
+        game.markLost();
+      } else {
+        game.remainingTime = expectedRemaining;
+        game.startTimer();
+      }
+    }
+
     return game;
   }
 }
