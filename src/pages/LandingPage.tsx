@@ -6,14 +6,9 @@ export function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-blue-900 text-white/80">
       <h1 className="text-5xl font-bold mb-8">Mebi</h1>
-      <ol className="list-decimal text-lg max-w-md mb-8 space-y-2 pl-6">
-        <li>Escribe uno o más versículos, cada uno en su propia línea.</li>
-        <li>Se creará una partida por cada versículo.</li>
-        <li>Adivina las letras antes de quedarte sin intentos.</li>
-      </ol>
       <Link to="/create">
         <Button size="lg" className="flex items-center gap-2">
-          Comenzar
+          Crear Partida
           <ArrowRightIcon className="w-9 h-9" />
         </Button>
       </Link>
